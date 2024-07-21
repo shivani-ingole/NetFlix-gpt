@@ -3,9 +3,10 @@ import Header from './Header'
 import { checkValidateData } from '../utils/validate'
 import {  createUserWithEmailAndPassword , signInWithEmailAndPassword ,  updateProfile } from "firebase/auth";
 import {auth} from '../utils/firebase'
-import { useNavigate } from 'react-router-dom';
+
 import { useDispatch } from 'react-redux';
 import { addUser } from '../utils/userSlice';
+import { BG_IMG, USER_PHOTO } from '../utils/constants';
 
 const Login = () => {
 
@@ -14,7 +15,6 @@ const Login = () => {
   const [isSignIn , setIsSignIn] = useState(true)
   const [errorMsg , setErrorMsg] = useState(null)
 
-  const navigate = useNavigate()
   
   const email = useRef(null)
   const password = useRef(null)
@@ -35,12 +35,12 @@ createUserWithEmailAndPassword(auth, email.current.value , password.current.valu
    
     const user = userCredential.user;
     updateProfile(user, {
-      displayName:name.current.value , photoURL: "https://occ-0-3216-2186.1.nflxso.net/dnm/api/v6/vN7bi_My87NPKvsBoib006Llxzg/AAAABR0tVMTskvIJzW8TirWQnD3trSLTFrMfeVHJShxp5ZrGQNRNaUq2Z_7qykvuFfsTo_MvIcglg-HO4tfrnU7oc7VF0nnYK7w.png?r=b21"
+      displayName:name.current.value , photoURL:USER_PHOTO
     }).then(() => {
       // Profile updated!
       const {uid ,email, displayName , photoURL } = auth.currentUser;
       dispatch(addUser({uid:uid , email:email , displayName:displayName , photoURL:photoURL}))
-      navigate("/browse")
+      
     }).catch((error) => {
       // An error occurred
       setErrorMsg(error.message)
@@ -65,7 +65,7 @@ else{
     const user = userCredential.user;
 
     console.log(user)
-    navigate("/browse")
+   
   
   })
   .catch((error) => {
@@ -86,8 +86,9 @@ else{
     <div  className='relative'>
       <Header />
       <div>
-        <img className='' src="https://assets.nflxext.com/ffe/siteui/vlv3/0552717c-9d8c-47bd-9640-4f4efa2de663/537e2c5e-c750-4d4c-9f7a-e66fe93eb977/IN-en-20240701-POP_SIGNUP_TWO_WEEKS-perspective_WEB_b00eeb83-a7e8-4b5b-8ff7-86ed92c51caf_large.jpg"
-        alt="logo" />
+        <img className=''
+         src={BG_IMG}
+        alt="background_img" />
       </div>
     <form onSubmit={(e)=> e.preventDefault()} className='text-white p-4 bg-black bg-opacity-80 absolute -translate-y-1/2 top-1/2 left-1/2 -translate-x-1/2 flex flex-col w-[400px]'>
       <h1 className='font-bold text-2xl'> {isSignIn ? "Sign In" :"Sign up"}</h1>
