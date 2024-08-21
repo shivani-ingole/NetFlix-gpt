@@ -8,12 +8,16 @@ import { onAuthStateChanged } from "firebase/auth";
 import { useDispatch } from 'react-redux';
 import { addUser, removeUser } from '../utils/userSlice';
 import { LOGO } from '../utils/constants';
+import { toggleGptsearchView } from '../utils/gptSlice';
+import { SUPPORTED_LAMGUAHES } from '../utils/constants';
+import { changeLanguage } from '../utils/configSlice';
 
 
 const Header = () => {
   const dispatch = useDispatch()  
   const navigate = useNavigate()
 const user =useSelector(store => store.user)
+const  showSearchGpt = useSelector((store)=> store.gpt.showSearchGpt)
 
   const handleSubmit =()=>{
     signOut(auth).then(() => {
@@ -44,6 +48,16 @@ const user =useSelector(store => store.user)
     
       },[])
 
+      const handleGptSearch=()=>{
+        // toggle GPT search click
+        dispatch(toggleGptsearchView())
+      }
+
+      const handleLanguageChange= (e)=>{
+        dispatch(changeLanguage(e.target.value))
+        //  console.log(e.target.value)
+      }
+
   return (
    
     
@@ -53,6 +67,13 @@ const user =useSelector(store => store.user)
      src={LOGO}
      alt='netflix logo' />
      { user && <div className='flex p-2 items-center gap-1'>
+      {  showSearchGpt && <select className='bg-gray-700 text-white p-2 mr-2 rounded-lg' onClick={handleLanguageChange}>
+        {SUPPORTED_LAMGUAHES.map(lang =>  <option key={lang.identifier} value={lang.identifier}>{lang.name}</option>)}
+       
+      </select>}
+      <button onClick={handleGptSearch} className='px-3 py-2 text-white bg-purple-700 rounded-lg mr-3 text-sm'>
+        GPT search
+      </button>
     <img
     className='w-12 h-12'
     src ={user.photoURL}
